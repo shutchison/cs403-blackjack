@@ -10,5 +10,6 @@ The player or players are dealt a two-card hand and add together the value of th
 
 The dealer must hit until the cards total 17 or more points. Players win by not busting and having a total higher than the dealer's. The dealer loses by busting or having a lesser hand than the player who has not busted. If the player and dealer have the same total, this is called a "push", and the player with neither win nor lose money on that hand. If all available players bust, the hand ends automatically without the dealer having to play his or her hand
 
+Since the players are only playing against the dealer and not against one another, the objective of this implementation is for the players to double their money.  The first player to double their money wins!
 
 <sub> Game description shamelessly stolen from Wikepedia at https://en.wikipedia.org/wiki/Blackjack </sub>
