@@ -1,0 +1,52 @@
+ 4, D
+ A, S
+ 2, D
+ 5, H
+10, S
+ 2, S
+ A, H
+ 4, S
+ 7, D
+ 4, C
+ 3, H
+ 5, D
+ 5, C
+ 2, H
+ A, C
+ 8, S
+ J, C
+ Q, S
+ K, H
+ Q, H
+ 3, S
+ 4, H
+ 8, C
+ 9, S
+ J, S
+ K, C
+ 7, S
+ K, D
+ J, D
+ 6, C
+ 2, C
+ 6, D
+ 5, S
+ 8, H
+ 8, D
+10, C
+ J, H
+ 6, H
+ K, S
+ 9, D
+ Q, D
+10, H
+ 3, D
+ Q, C
+ 9, C
+ 7, C
+ 6, S
+ 7, H
+ 9, H
+ 3, C
+ A, D
+10, D
