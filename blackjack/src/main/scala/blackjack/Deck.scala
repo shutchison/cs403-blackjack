@@ -3,25 +3,19 @@ package blackjack
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 
-class Card(val value : String, val suit : String) {
-  val points = Map("2"->2, "3"->3, "4"->4, "5"->5,
-                   "6"->6, "7"->7, "8"->8,"9"->9,"10"->10,
-                   "J"->10,"Q"->10,"K"->10,"A"->11)
-  
-  def getCardValue() : Int = {
-    return points(suit)
-  }
-}
-
 class Deck {
+    val basePath = "C:\\Users\\Scott.Hutchison\\Documents\\Classes\\CS403\\cs403-blackjack\\blackjack\\src\\main\\scala\\blackjack\\"
+    
     var deck : ArrayBuffer[Card]= new ArrayBuffer[Card]()
     
     def initializeDeck(loadFromFile : Boolean = false) = {
       deck = new ArrayBuffer[Card]()
       if (loadFromFile){
-        val deckFile = "C:\\Users\\Scott.Hutchison\\Documents\\Classes\\CS403\\cs403-blackjack\\blackjack\\src\\main\\scala\\blackjack\\deck.txt"
+        val deckFile = "deck_sorted.txt"
+        println("***INFO: loading deck from file: " + deckFile + "***")
         
-        for (line <- Source.fromFile(deckFile).getLines.toList) {
+        
+        for (line <- Source.fromFile(basePath + deckFile).getLines.toList) {
 
           val stringLine = line.toString()
           val valueAndSuit = stringLine.split(",").toList
@@ -33,7 +27,7 @@ class Deck {
         }
       }
       else {
-        
+        println("***INFO: Generating randomly shuffled deck***")        
         for (i <- 2 to 10){
           deck += new Card(i.toString(), "C")
           deck += new Card(i.toString(), "D")
