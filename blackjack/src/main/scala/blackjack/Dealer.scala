@@ -2,7 +2,7 @@ package blackjack
 
 import scala.collection.mutable.ArrayBuffer
 
-class Dealer {
+object Dealer {
   val playerStartingMoney = 100
   
   var deck = new Deck()

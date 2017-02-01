@@ -2,9 +2,11 @@ package blackjack
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
+import java.io._
 
 class Deck {
-    val basePath = "C:\\Users\\Scott.Hutchison\\Documents\\Classes\\CS403\\cs403-blackjack\\blackjack\\src\\main\\scala\\blackjack\\"
+    var basePath = "C:\\Users\\Scott.Hutchison\\Documents\\Classes\\CS403\\cs403-blackjack\\blackjack\\src\\main\\scala\\blackjack\\"
+    basePath = new File("").getAbsolutePath() + "\\src\\main\\scala\\blackjack\\"
     
     var deck : ArrayBuffer[Card]= new ArrayBuffer[Card]()
     

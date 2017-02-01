@@ -5,22 +5,21 @@ import scala.collection.mutable.ArrayBuffer
 object Blackjack {
   
   def main (args: Array[String]):Unit= {
-    var dealer = new Dealer()
-    dealer.dealNewHands(true)
+    Dealer.dealNewHands(true)
     
-    dealer.playerQueue.advanceOrder()
-    dealer.playerQueue.advanceOrder()
+    Dealer.playerQueue.advanceOrder()
+    Dealer.playerQueue.advanceOrder()
     
     var h = new Hand()
-    h.cards += dealer.deck.deal() 
-    h.cards += dealer.deck.deal() 
+    h.cards += Dealer.deck.deal() 
+    h.cards += Dealer.deck.deal() 
 
-    dealer.playerQueue.getCurrentPlayer().hands += h
+    Dealer.playerQueue.getCurrentPlayer().hands += h
     
-    dealer.playerQueue.advanceOrder()
-    dealer.hit()
+    Dealer.playerQueue.advanceOrder()
+    Dealer.hit()
     
-    var gameArea = showGameArea(dealer)
+    var gameArea = showGameArea()
     
     for (line <- gameArea) {
       println(line)
@@ -29,21 +28,18 @@ object Blackjack {
     println("done")
   }
   
-  def initializeGame() : Dealer = {
-    var dealer = new Dealer()
-    dealer.dealNewHands(true)
-    
-    return dealer
-  }
+  def initializeGame() = {
+    Dealer.dealNewHands(true)
+  }  
   
-  def showGameArea(dealer : Dealer) : ArrayBuffer[String] = {
+  def showGameArea() : ArrayBuffer[String] = {
     var gameArea = new ArrayBuffer[String]()
     
     gameArea += "="*80
     gameArea += " "*35 + "BLACKJACK!"
     gameArea += "="*80
     gameArea += " "*80
-    var dealerLines = dealer.printDealer()
+    var dealerLines = Dealer.printDealer()
     for (i <- 0 until dealerLines.length) {
       dealerLines(i) = " "*35 + dealerLines(i)
     }
@@ -52,7 +48,7 @@ object Blackjack {
     gameArea += "-"*80
     var playerStrings = new ArrayBuffer[ArrayBuffer[String]]()
     
-    for (player <- dealer.playerQueue.players) {
+    for (player <- Dealer.playerQueue.players) {
       playerStrings += player.printPlayer()
     }
     

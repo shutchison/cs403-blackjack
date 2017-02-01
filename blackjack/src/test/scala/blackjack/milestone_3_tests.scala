@@ -4,7 +4,8 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import scala.collection.mutable.ArrayBuffer
 
-class milestone_3_tests  extends FunSpec with Matchers{
+class milestone_3_tests extends FunSpec with Matchers{
+  println("test")
   describe("Milestone 3 tests") {
     describe("Checks that initialization works"){
       var expectedResult = new ArrayBuffer[String]()
@@ -26,33 +27,33 @@ class milestone_3_tests  extends FunSpec with Matchers{
       expectedResult += "Doug                Carl                Bob                 Alice               "
       expectedResult += "Money: $100         Money: $100         Money: $100         Money: $100         "
 
-      var dealer = Blackjack.initializeGame()
-      dealer.dealNewHands(true)
+      Blackjack.initializeGame()
+      Dealer.dealNewHands(true)
   
-      Blackjack.showGameArea(dealer) shouldBe expectedResult 
+      Blackjack.showGameArea() shouldBe expectedResult 
       
     }
     it("Confirms that winners are detected") {
-      var dealer = Blackjack.initializeGame()
-      dealer.dealNewHands(true)
+      Blackjack.initializeGame()
+      Dealer.dealNewHands(true)
       
-      var winnerString = dealer.checkForWinner()
+      var winnerString = Dealer.checkForWinner()
       winnerString shouldBe("None")
       
-      dealer.playerQueue.players(0).money = 200
-      winnerString = dealer.checkForWinner()
+      Dealer.playerQueue.players(0).money = 200
+      winnerString = Dealer.checkForWinner()
       winnerString shouldBe("Alice is the winner!")
       
-      dealer.playerQueue.players(1).money = 200
-      winnerString = dealer.checkForWinner()
+      Dealer.playerQueue.players(1).money = 200
+      winnerString = Dealer.checkForWinner()
       winnerString shouldBe("Alice, Bob TIED!")
       
-      dealer.playerQueue.players(2).money = 200
-      winnerString = dealer.checkForWinner()
+      Dealer.playerQueue.players(2).money = 200
+      winnerString = Dealer.checkForWinner()
       winnerString shouldBe("Alice, Bob, Carl TIED!")
       
-      dealer.playerQueue.players(3).money = 200
-      winnerString = dealer.checkForWinner()
+      Dealer.playerQueue.players(3).money = 200
+      winnerString = Dealer.checkForWinner()
       winnerString shouldBe("Alice, Bob, Carl, Doug TIED!")
     }
     it("Does a move and ") {

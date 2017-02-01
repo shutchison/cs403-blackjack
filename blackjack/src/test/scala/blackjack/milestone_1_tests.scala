@@ -60,10 +60,9 @@ class milestone_1_tests extends FunSpec with Matchers {
         expectedResult += "Doug                Carl                Bob                 Alice               "
         expectedResult += "Money: $100         Money: $100         Money: $100         Money: $100         "
 
-        var dealer = new Dealer()
-        dealer.dealNewHands(true)
+        Dealer.dealNewHands(true)
     
-        Blackjack.showGameArea(dealer) shouldBe expectedResult
+        Blackjack.showGameArea() shouldBe expectedResult
         
       }
     }
@@ -126,15 +125,12 @@ class milestone_1_tests extends FunSpec with Matchers {
           
           deck.initializeDeck(true)
           
-          h.cards += deck.deal()
-          h.cards += deck.deal()
-          h.cards += deck.deal()
-          h.cards += deck.deal()
-         
-          var player = new Dealer()
-          player.dealerHand = h
+          Dealer.dealerHand.cards += Dealer.deck.deal()
+          Dealer.dealerHand.cards += Dealer.deck.deal()
+          Dealer.dealerHand.cards += Dealer.deck.deal()
+          Dealer.dealerHand.cards += Dealer.deck.deal()
           
-          val playerArray = player.printDealer()
+          val playerArray = Dealer.printDealer()
           
           val expectedValue = new ArrayBuffer[String]()
           expectedValue += "2C 3C 4C 5C         "
@@ -164,11 +160,10 @@ class milestone_1_tests extends FunSpec with Matchers {
           expectedResult += "Doug                Carl                Bob                 Alice               "
           expectedResult += "Money: $100         Money: $100         Money: $100         Money: $100         "
           
-          var dealer = new Dealer()
-          dealer.dealNewHands(true)
+          Dealer.dealNewHands(true)
       
-          dealer.playerQueue.advanceOrder()
-          Blackjack.showGameArea(dealer) shouldBe(expectedResult)
+          Dealer.playerQueue.advanceOrder()
+          Blackjack.showGameArea() shouldBe(expectedResult)
       }
     }
   }
