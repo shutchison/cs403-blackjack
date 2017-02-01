@@ -2,8 +2,12 @@ package blackjack
 
 import scala.collection.mutable.ArrayBuffer
 
-class PlayerQueue {
-  val players = Array[Player](new Player("Alice"), new Player("Bob"), new Player("Carl"), new Player("Doug"))
+class PlayerQueue(startingMoney: Int) {
+  
+  val players = Array[Player](new Player("Alice", startingMoney), 
+                              new Player("Bob", startingMoney),
+                              new Player("Carl", startingMoney),
+                              new Player("Doug", startingMoney))
   
   var currentPlayer = 0
   
@@ -20,7 +24,7 @@ class PlayerQueue {
       }
     }
     
-    println(playerString)
+    //println(playerString)
     return playerString
   }
   

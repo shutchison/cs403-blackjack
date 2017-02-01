@@ -3,8 +3,10 @@ package blackjack
 import scala.collection.mutable.ArrayBuffer
 
 class Dealer {
+  val playerStartingMoney = 100
+  
   var deck = new Deck()
-  var playerQueue = new PlayerQueue()
+  var playerQueue = new PlayerQueue(playerStartingMoney)
   var dealerHand = new Hand()
 
   def dealNewHands(loadFromFile: Boolean = false) = {
@@ -53,6 +55,34 @@ class Dealer {
   
   def stand() = {
     playerQueue.advanceOrder()
+  }
+  
+  def checkForWinner() : String = {
+      var winner = "None"
+      
+      for (player <- playerQueue.players) {
+        if (player.money >= playerStartingMoney*2) {
+          if (winner == "None"){
+            winner = player.name           
+          }
+          else {
+            winner += ", " + player.name
+          }
+        }
+      }
+      
+      if (winner == "None") {
+        return winner
+      }
+      else {
+        if (winner.contains(",")) {
+          winner += " TIED!"
+        }
+        else {
+          winner += " is the winner!"
+        }
+      }
+      return winner
   }
   
   def takeDealerTurn() = {

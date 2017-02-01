@@ -8,15 +8,32 @@ object Blackjack {
     var dealer = new Dealer()
     dealer.dealNewHands(true)
     
-    dealer.hit()
+    dealer.playerQueue.advanceOrder()
+    dealer.playerQueue.advanceOrder()
+    
+    var h = new Hand()
+    h.cards += dealer.deck.deal() 
+    h.cards += dealer.deck.deal() 
+
+    dealer.playerQueue.getCurrentPlayer().hands += h
+    
     dealer.playerQueue.advanceOrder()
     dealer.hit()
-    dealer.hit()
     
-    val game = showGameArea(dealer)
-    for (line <- game) {
+    var gameArea = showGameArea(dealer)
+    
+    for (line <- gameArea) {
       println(line)
     }
+    
+    println("done")
+  }
+  
+  def initializeGame() : Dealer = {
+    var dealer = new Dealer()
+    dealer.dealNewHands(true)
+    
+    return dealer
   }
   
   def showGameArea(dealer : Dealer) : ArrayBuffer[String] = {
@@ -39,7 +56,6 @@ object Blackjack {
       playerStrings += player.printPlayer()
     }
     
-    // TODO: make this work if players have more than one hand.
     for (i <- 0 until playerStrings(0).length) {
       var line = ""
       for (player <- playerStrings.reverse) {

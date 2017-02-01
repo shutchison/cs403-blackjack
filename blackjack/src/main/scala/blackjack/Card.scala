@@ -6,6 +6,6 @@ class Card(val value : String, val suit : String) {
                    "J"->10,"Q"->10,"K"->10,"A"->11)
   
   def getCardValue() : Int = {
-    return points(suit)
+    return points(value)
   }
 }

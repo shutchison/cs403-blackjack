@@ -9,7 +9,7 @@ class Hand {
   def getHandValue(): Int = {
     var handValue = 0
     for (card <- cards) {
-      handValue += card.points(card.value)
+      handValue += card.getCardValue()
     }
     return handValue
   }
@@ -26,8 +26,13 @@ class Hand {
     val handValue = getHandValue()
     var totalString = "Hand total: " + handValue.toString()
     handArray += totalString + " "*(20-totalString.length())
+    if (handValue > 21) {
+      handArray += "*** BUSTED ***      "  
+    }
+    else {
+      handArray += " "*20    
+    }
     
-    handArray += " "*20
     
     /*for (line <- handArray){
       println(line)
