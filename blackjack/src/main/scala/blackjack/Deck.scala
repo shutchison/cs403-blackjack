@@ -13,9 +13,13 @@ class Deck {
     def initializeDeck(loadFromFile : Boolean = false) = {
       deck = new ArrayBuffer[Card]()
       if (loadFromFile){
-        val deckFile = "deck_sorted.txt"
-        println("***INFO: loading deck from file: " + deckFile + "***")
+        var deckFile = "deck_sorted.txt"
         
+        // deckFile = "deck_random.txt"
+        
+        
+        
+        println("***INFO: loading deck from file: " + deckFile + "***")
         
         for (line <- Source.fromFile(basePath + deckFile).getLines.toList) {
 

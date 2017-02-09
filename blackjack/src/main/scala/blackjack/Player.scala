@@ -70,16 +70,39 @@ class Player(val name : String, val startingMoney : Int) {
   
   def decideBet() : Int = {
     // TODO: figure out a way to adjust bet as part of strategy
-
-    return 5
+    bet = 5
+    
+    return bet
   }
   
   def solicitDecision() : String = {
     var decision = ""
-    // TODO: insert logic and return a string to tell the dealer what to do
-    // Probably just a string that says "hit", "stand", "double", "split"
-    // check for these strings in the Dealer class
     
-    return decision
+    if (getActiveHand().getHandValue() < 17) {
+      println(name + " says 'hit me!'")
+      return "hit"
+    }
+    else if (getActiveHand().getHandValue() >21){
+      println(name + " says 'bust'")
+      return "bust"
+    }
+    else {
+      println(name + " says 'stand.'")
+      return "stand"
+    }
+    
   }
+  
+  def isLastHandToPlay() : Boolean = {
+    if (hands.length == 1) {
+      return true
+    }
+    else if (activeHandIndex == hands.length) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
+  
 }

@@ -1,18 +1,18 @@
+10, S
  4, D
  A, S
  2, D
  5, H
-10, S
- 2, S
  A, H
+ 2, S
  4, S
  7, D
  4, C
+ A, C 
  3, H
  5, D
  5, C
  2, H
- A, C
  8, S
  J, C
  Q, S

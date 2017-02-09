@@ -8,9 +8,39 @@ class Hand {
   
   def getHandValue(): Int = {
     var handValue = 0
+    var numAces = 0
+    
     for (card <- cards) {
       handValue += card.getCardValue()
     }
+        
+    for (card <- cards) {
+      if (card.value == "A"){
+        numAces += 1
+      }
+    }
+    
+    if (numAces == 0) {
+      return handValue
+    }
+    else {
+      if (handValue <= 21) {
+        return handValue  
+      }
+      else{
+        while (handValue > 21) {
+          if (numAces == 0) {
+            return handValue
+          }
+          else if (numAces > 0) {
+            handValue -= 10
+            numAces -= 1
+          }
+        }
+        return handValue
+      }
+    }
+    
     return handValue
   }
   
@@ -28,6 +58,9 @@ class Hand {
     handArray += totalString + " "*(20-totalString.length())
     if (handValue > 21) {
       handArray += "*** BUSTED ***      "  
+    }
+    else if (handValue == 21 && cards.length == 2){
+      handArray += "*** BLACKJACK! ***  "       
     }
     else {
       handArray += " "*20    

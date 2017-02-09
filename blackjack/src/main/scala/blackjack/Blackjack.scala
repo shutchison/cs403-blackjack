@@ -1,37 +1,37 @@
 package blackjack
 
 import scala.collection.mutable.ArrayBuffer
+import scala.util.control.Breaks._
 
 object Blackjack {
+
+  var playerQueue = new PlayerQueue()
+  
   
   def main (args: Array[String]):Unit= {
-    Dealer.dealNewHands(true)
-    
-    Dealer.playerQueue.advanceOrder()
-    Dealer.playerQueue.advanceOrder()
-    
-    var h = new Hand()
-    h.cards += Dealer.deck.deal() 
-    h.cards += Dealer.deck.deal() 
+    initializeGame()
 
-    Dealer.playerQueue.getCurrentPlayer().hands += h
+    Dealer.doGame()   
+
     
-    Dealer.playerQueue.advanceOrder()
-    Dealer.hit()
     
-    var gameArea = showGameArea()
-    
-    for (line <- gameArea) {
-      println(line)
-    }
-    
-    println("done")
+//    
+//    for (i <- 0 to 20) {
+//      Dealer.doTurn()
+//      var gameLines = showGameArea()
+//      for (line <- gameLines) {
+//        println(line)    
+//      }
+//      println("Winner? " + Dealer.checkForWinner())
+//    }    
   }
   
-  def initializeGame() = {
-    Dealer.dealNewHands(true)
+  def initializeGame(loadFromFile: Boolean = false) = {
+    playerQueue = new PlayerQueue()
+    Dealer.dealNewHands(loadFromFile)
   }  
-  
+
+
   def showGameArea() : ArrayBuffer[String] = {
     var gameArea = new ArrayBuffer[String]()
     
@@ -59,10 +59,56 @@ object Blackjack {
       }
       gameArea += line
     }
-
+    if (Dealer.dealerNeedsToTakeTurnNext) {
+      gameArea += "Current Player: Dealer"
+    }
+    else {
+      gameArea += "Current Player: " + Dealer.playerQueue.getCurrentPlayer().name    
+    }
+    
+    
     //println(playerStrings)
     
     //println(gameArea)
     return gameArea
   }
+//    
+//def dealNewHands(loadFromFile: Boolean = false) = {
+//    // Remove all players who can't afford the minimum bet of $5
+//    breakable {
+//      for (player <- playerQueue.players) {
+//        if (player.money < 5 && player.name != "Dealer") {
+//          playerQueue.removePlayer(player)
+//          break
+//        }
+//      }
+//    }
+//
+//    // bets are placed and all hands are emptied
+//    for (player <- playerQueue.players) {
+//        player.money -= player.decideBet()
+//        while (player.hands.length > 0){
+//          player.hands.remove(0)
+//        }
+//    }
+//    
+//    
+//    Dealer.dealerHand = new Hand()
+//    var newHands : ArrayBuffer[Hand] = new ArrayBuffer[Hand]()
+//    
+//    for (player <- playerQueue.players) {
+//      newHands += new Hand()
+//    } 
+//
+//    Dealer.deck.initializeDeck(loadFromFile)
+//    for (i <- 0 until 2){
+//      for (hand <- newHands) {
+//        hand.cards += Dealer.deck.deal()
+//      }
+//    }
+//    
+//    for (player <- playerQueue.players) {
+//      player.hands += newHands.remove(0)
+//    }
+//  }  
 }
