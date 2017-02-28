@@ -20,16 +20,19 @@ object Dealer{
   
   def dealNewHands(loadFromFile: Boolean = false) = {
     // Remove all players who can't afford the minimum bet of $5
-    breakable {
-      for (player <- playerQueue.players) {
-        if (player.money < 5) {
-          playerQueue.removePlayer(player)
-          numActivePlayers = playerQueue.players.length
-          lastPlayer = playerQueue.getLastPlayer()
-          break
-        }
+    var brokePlayers = new ArrayBuffer[Player]()  
+    for (player <- playerQueue.players) {
+      if (player.money < 5) {
+        brokePlayers += player      
       }
     }
+    
+    for (brokePlayer <- brokePlayers){
+      playerQueue.removePlayer(brokePlayer)
+    }
+
+    numActivePlayers = playerQueue.players.length
+    lastPlayer = playerQueue.getLastPlayer()
 
     // bets are placed and all hands are emptied
     for (player <- playerQueue.players) {
@@ -117,10 +120,23 @@ object Dealer{
       return winner
   }
   
-  def takeDealerTurn() = {
-    println("Dealer is taking his turn")
+  def takeDealerTurn(doPrints : Boolean = false) = {
+    if (doPrints) {
+      println("Dealer is taking his turn")
+    }
     while (dealerHand.getHandValue() < 17) {
+      if (doPrints) {
+        println("Dealer takes a hit")
+      }
       dealerHand.cards += deck.deal()
+    }
+    if (doPrints) {
+      if (dealerHand.getHandValue() > 21) {
+        println("Dealer Busts!")
+      }
+      else {
+        println("Dealer Stands with " + dealerHand.getHandValue().toString())
+      }
     }
     payWinners()
     dealerNeedsToTakeTurnNext = false
@@ -145,11 +161,12 @@ object Dealer{
           dealerNeedsToTakeTurnNext = true
         }
       }
-      
+      //TODO: Need to get this to take the whole player turn until they stand or bust instead of just one move.
       playerMove match {
         case "hit" => hit()
         case "stand" => playerQueue.advanceOrder()
         case "bust" => playerQueue.advanceOrder()
+        //TODO: split and double cases
         
         case unexpectedCase => println("Unexpected case: " + unexpectedCase.toString)  
       }
@@ -158,33 +175,38 @@ object Dealer{
     }
   }
   
-  def doTurn() = {
+  def doTurn(doPrints : Boolean = false) = {
     // doTurn will finish the round until the dealers hand is resolved and pay the winners.
     while (!dealerNeedsToTakeTurnNext) {
       doMove()
     }
     // next doMove will trigger dealer's turn
     doMove()
-
-    var gameLines = Blackjack.showGameArea()
-    for (line <- gameLines) {
-      println(line)
+    if (doPrints) {
+      var gameLines = Blackjack.showGameArea()
+      for (line <- gameLines) {
+        println(line)
+      }    
     }
   }
   
-  def doGame(loadFromFile: Boolean = false) = {
+  def doGame(loadFromFile: Boolean = false, doPrints: Boolean = false) = {
     var winnerString = "None"
     while (winnerString == "None"){
-      doTurn()
+      doTurn(doPrints)
       winnerString = checkForWinner()
-      println("Winner string is: " + winnerString) 
+      if (doPrints) {
+        println("Winner string is: " + winnerString)       
+      }
       dealNewHands(loadFromFile)
     }
   }
   
-  def payWinners() = {
+  def payWinners(doPrints : Boolean = false) = {
     //TODO: pay blackjacks 3:2 here
-    println("Paying winners!")
+    if (doPrints) {
+      println("Paying winners!")
+    }
     var handResultString = ""
     var result = ""
     
@@ -226,7 +248,9 @@ object Dealer{
       }
       handResultString = result + " "*(20-result.length()) + handResultString
     }
-    println("Hand results are as follows:")
-    println(handResultString)
+    if (doPrints) {
+      println("Hand results are as follows:")
+      println(handResultString)
+    }
   }
 }

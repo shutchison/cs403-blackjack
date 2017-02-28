@@ -75,19 +75,25 @@ class Player(val name : String, val startingMoney : Int) {
     return bet
   }
   
-  def solicitDecision() : String = {
+  def solicitDecision(doPrints : Boolean = false) : String = {
     var decision = ""
     
     if (getActiveHand().getHandValue() < 17) {
-      println(name + " says 'hit me!'")
+      if (doPrints) {
+        println(name + " says 'hit me!'")        
+      }
       return "hit"
     }
     else if (getActiveHand().getHandValue() >21){
-      println(name + " says 'bust'")
+      if (doPrints) {
+        println(name + " says 'bust'")
+      }
       return "bust"
     }
     else {
-      println(name + " says 'stand.'")
+      if (doPrints) {
+        println(name + " says 'stand.'")
+      }
       return "stand"
     }
     

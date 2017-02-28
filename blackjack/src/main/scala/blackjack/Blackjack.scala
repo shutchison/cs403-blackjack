@@ -4,30 +4,25 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.control.Breaks._
 
 object Blackjack {
-
-  var playerQueue = new PlayerQueue()
-  
   
   def main (args: Array[String]):Unit= {
-    initializeGame()
-
-    Dealer.doGame()   
-
+    initializeGame(true)
     
+    var gameLines = showGameArea()
+    for (line <- gameLines) {
+      println(line)    
+    }
     
-//    
-//    for (i <- 0 to 20) {
-//      Dealer.doTurn()
-//      var gameLines = showGameArea()
-//      for (line <- gameLines) {
-//        println(line)    
-//      }
-//      println("Winner? " + Dealer.checkForWinner())
-//    }    
+    Dealer.doGame(true, true)
+    
+    gameLines = showGameArea()
+    for (line <- gameLines) {
+      println(line)    
+    }
   }
   
   def initializeGame(loadFromFile: Boolean = false) = {
-    playerQueue = new PlayerQueue()
+    Dealer.playerQueue = new PlayerQueue()
     Dealer.dealNewHands(loadFromFile)
   }  
 

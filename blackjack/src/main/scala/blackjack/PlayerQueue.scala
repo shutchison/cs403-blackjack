@@ -14,7 +14,7 @@ class PlayerQueue() {
   val playerThreeName = "Carl"
   val playerFourName  = "Doug"
   
-  val players = new ArrayBuffer[Player]()
+  var players = new ArrayBuffer[Player]()
   players += new Player(playerOneName, startingMoney)
   players += new Player(playerTwoName, startingMoney)
   players += new Player(playerThreeName, startingMoney)
@@ -71,6 +71,5 @@ class PlayerQueue() {
   
   def advanceOrder() = {
     currentPlayer = (currentPlayer+1) % players.length
-  }
-  
+  }  
 }
