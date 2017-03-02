@@ -1,4 +1,4 @@
-package blackjack
+package model
 
 class Card(val value : String, val suit : String) {
   val points = Map("2"->2, "3"->3, "4"->4, "5"->5,

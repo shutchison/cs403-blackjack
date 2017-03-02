@@ -1,6 +1,7 @@
-package blackjack
+package model
 
 import scala.collection.mutable.ArrayBuffer
+
 
 class Hand {
   var cards : ArrayBuffer[Card] = new ArrayBuffer[Card]()

@@ -1,8 +1,16 @@
 package blackjack
 
+import model._
+import view._
+import controller._
+
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import scala.collection.mutable.ArrayBuffer
+import model.PlayerQueue
+import model.Player
+import model.Hand
+import model.Deck
 
 class milestone_1_tests extends FunSpec with Matchers {
    describe("Milestone 1 tests") {
@@ -61,9 +69,11 @@ class milestone_1_tests extends FunSpec with Matchers {
         expectedResult += "Money: $95          Money: $95          Money: $95          Money: $95          "
         expectedResult += "Current Player: Alice"
         
-        Blackjack.initializeGame()
-    
-        Blackjack.showGameArea() shouldBe expectedResult
+        Dealer.initializeGame(true)
+        
+        val t = new textView()
+        
+        t.showGameArea() shouldBe expectedResult
         
       }
     }

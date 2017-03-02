@@ -1,8 +1,16 @@
 package blackjack
 
+import model._
+import view._
+import controller._
+
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import scala.collection.mutable.ArrayBuffer
+import model.Card
+import model.Player
+import model.Hand
+import controller.Dealer
 
 class ms3_tests extends FunSpec with Matchers{
   describe("Milestone 3 tests") {
@@ -28,16 +36,19 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "Money: $95          Money: $95          Money: $95          Money: $95          "
         expectedResult += "Current Player: Alice"
         
-        Blackjack.initializeGame(true)
+        Dealer.initializeGame(true)
         
-        var actualResult = Blackjack.showGameArea()
+        val t = new textView()
+        
+        var actualResult = t.showGameArea()
   
         assert(actualResult.equals(expectedResult) == true, "\n" +actualResult.toString + "\n" + expectedResult)        
       }
     }
     describe("Checks that winners are detected") {
       it("Confirms that winners are detected") {
-        Blackjack.initializeGame()
+        Dealer.initializeGame(true)
+        
         
         var winnerString = Dealer.checkForWinner()
         winnerString shouldBe("None")
@@ -62,7 +73,7 @@ class ms3_tests extends FunSpec with Matchers{
         winnerString = Dealer.checkForWinner()
         winnerString shouldBe("Alice, Bob, Carl, Doug TIED!")
         
-        Blackjack.initializeGame(true)
+        Dealer.initializeGame(true)
       }
     }
     describe("Allows players to move, a whole turn can be completed, and a whole game can be completed.") {
@@ -89,12 +100,14 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "Current Player: Bob"
 
                 
-        Blackjack.initializeGame(true)
+        Dealer.initializeGame(true)
 
         Dealer.doMove() //Alice hits
         Dealer.doMove() //Alice stands
         
-        var actualResult = Blackjack.showGameArea()
+        val t = new textView()
+        var actualResult = t.showGameArea()
+        
         assert(actualResult.equals(expectedResult) == true, "\n" +actualResult.toString + "\n" + expectedResult)
       }
       it("Allows a whole turn to finish when the dealer completes his turn and pays the players.") {
@@ -118,11 +131,13 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "Money: $95          Money: $95          Money: $100         Money: $95          "
         expectedResult += "Current Player: Alice"
         
-        Blackjack.initializeGame(true)
+        Dealer.initializeGame(true)
 
         Dealer.doTurn()
 
-        var actualResult = Blackjack.showGameArea()
+        val t = new textView()
+        var actualResult = t.showGameArea()
+        
         assert(actualResult.equals(expectedResult) == true, "\n" +actualResult.toString + "\n" + expectedResult)
       }
       it("Allows an entire game to be played") {
@@ -146,11 +161,12 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "Money: $100         "
         expectedResult += "Current Player: Bob"
         
-        Blackjack.initializeGame(true)
+        Dealer.initializeGame(true)
 
         Dealer.doGame(true, false)
 
-        var actualResult = Blackjack.showGameArea()
+        val t = new textView()
+        var actualResult = t.showGameArea()
        
         assert(actualResult.equals(expectedResult) == true, "\n" +actualResult.toString + "\n" + expectedResult)
       }

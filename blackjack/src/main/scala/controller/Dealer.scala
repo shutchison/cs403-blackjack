@@ -1,7 +1,12 @@
-package blackjack
+package controller
+
+import blackjack._
+import model._
+import view._
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util.control.Breaks._
+
 
 object Dealer{
   val playerStartingMoney = 100
@@ -17,6 +22,10 @@ object Dealer{
   
   var dealerNeedsToTakeTurnNext = false
   
+  def initializeGame(loadFromFile: Boolean = false) = {
+    Dealer.playerQueue = new PlayerQueue()
+    Dealer.dealNewHands(loadFromFile)
+  }  
   
   def dealNewHands(loadFromFile: Boolean = false) = {
     // Remove all players who can't afford the minimum bet of $5
@@ -183,7 +192,8 @@ object Dealer{
     // next doMove will trigger dealer's turn
     doMove()
     if (doPrints) {
-      var gameLines = Blackjack.showGameArea()
+      val textView = new textView()
+      var gameLines = textView.showGameArea()
       for (line <- gameLines) {
         println(line)
       }    
