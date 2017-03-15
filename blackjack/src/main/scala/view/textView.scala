@@ -13,7 +13,7 @@ class textView {
     gameArea += " "*35 + "BLACKJACK!"
     gameArea += "="*80
     gameArea += " "*80
-    var dealerLines = Dealer2.printDealer()
+    var dealerLines = Dealer.printDealer()
     for (i <- 0 until dealerLines.length) {
       dealerLines(i) = " "*35 + dealerLines(i)
     }

@@ -8,23 +8,18 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.control.Breaks._
 
 
-object Dealer2{
+object Dealer{
   val playerStartingMoney = 100
   
-  var dealerNeedsToTakeTurnNext = false
+  var winnerDetected = false
   
   var deck = new Deck()
-  //var playerQueue = new PlayerQueue()
-  
-  //var numActivePlayers = playerQueue.players.length
-  
-  //var lastPlayer = playerQueue.getLastPlayer()
-  
   var dealerHand = new Hand()
-
+  
   def initializeGame(loadFromFile: Boolean = false) = {
     ActionQueue.reset
-    Dealer2.dealNewHands(loadFromFile)
+    winnerDetected = false
+    Dealer.dealNewHands(loadFromFile)
   }  
   
   def dealNewHands(loadFromFile: Boolean = false) = {
@@ -74,33 +69,38 @@ object Dealer2{
   
   def doMove(loadFromFile: Boolean = false, doPrints : Boolean = false) = {
     var currentAction = ActionQueue.peekCurrentAction
-    if (currentAction.isLeft) {
-      var currentPlayer = currentAction.left.get
-      var playerDecision = currentPlayer.solicitDecision(doPrints)
-      playerDecision match {
-        case "hit" => hit(currentPlayer)
-        case "stand" => stand()
-        case "bust" => ActionQueue.advanceActionOrder
-        //TODO: double and split
+    if (!winnerDetected) { //FIXME: Infinite loop here once winner is detected and doTurn is called.
+      if (currentAction.isLeft) {
+        var currentPlayer = currentAction.left.get
+        var playerDecision = currentPlayer.solicitDecision(doPrints)
+        playerDecision match {
+          case "hit" => hit(currentPlayer)
+          case "stand" => stand()
+          case "bust" => ActionQueue.advanceActionOrder
+          //TODO: double and split
+        }
+      
       }
-    
-    }
-    else {
-      var thingToDo = currentAction.right.get
-      thingToDo match {
-        case "Dealer" => takeDealerTurn(doPrints)
-        case "Payout" => payWinners(doPrints)
-        case "DealNewHands" => dealNewHands(loadFromFile)
-        case "CheckForWinner" => {
-          var winnerString = checkForWinner()
-          if (winnerString != "None") {
-           println(winnerString) 
-          }
-          else {
-            println("No winner detected")
+      else {
+        var thingToDo = currentAction.right.get
+        thingToDo match {
+          case "Dealer" => takeDealerTurn(doPrints)
+          case "Payout" => payWinners(doPrints)
+          case "DealNewHands" => dealNewHands(loadFromFile)
+          case "CheckForWinner" => {
+            var winnerString = checkForWinner()
+            if (winnerString != "None") {
+             println(winnerString) 
+            }
+            else {
+              println("No winner detected")
+            }
           }
         }
-      }
+      }      
+    }
+    else {
+      println(checkForWinner())
     }
   }
   
@@ -148,6 +148,7 @@ object Dealer2{
         }
       }
       ActionQueue.advanceActionOrder
+      winnerDetected = true
       return winner
   }
   
@@ -174,32 +175,43 @@ object Dealer2{
 
   def doTurn(loadFromFile : Boolean = false, doPrints : Boolean = false) = {
     // doTurn will finish the round until the dealers hand is resolved and pay the winners.
-    doMove(loadFromFile, doPrints)
-    var currentAction = ActionQueue.peekCurrentAction
-    
-    
-    while(currentAction.isLeft) {
+    if (!winnerDetected) {
       doMove(loadFromFile, doPrints)
+      var currentAction = ActionQueue.peekCurrentAction
       
-      currentAction = ActionQueue.peekCurrentAction
-    }
-
-    while(currentAction.isRight) {
-      if (doPrints) {
-        if(currentAction.right.get == "DealNewHands"){
-          val textView = new textView()
-          var gameLines = textView.showGameArea()
-          for (line <- gameLines) {
-          println(line)
+      
+      while(currentAction.isLeft) {
+        doMove(loadFromFile, doPrints)
+        
+        currentAction = ActionQueue.peekCurrentAction
+      }
+  
+      breakable {
+          
+  
+        while(currentAction.isRight) {
+          if (doPrints) {
+            if(currentAction.right.get == "DealNewHands"){
+              val textView = new textView()
+              var gameLines = textView.showGameArea()
+              for (line <- gameLines) {
+              println(line)
+              }
+            }
           }
-        }
-      doMove(loadFromFile, doPrints)
- 
-      currentAction = ActionQueue.peekCurrentAction
-
-      } 
+          
+          if(currentAction.right.get == "DealNewHands"){
+            break
+          }
+          doMove(loadFromFile, doPrints)
+     
+          currentAction = ActionQueue.peekCurrentAction 
+        }      
+      }    
+  
+      println(ActionQueue.showPlayerOrder)
+      
     }
-    println(ActionQueue.showPlayerOrder)
   }
   
   def doGame(loadFromFile: Boolean = false, doPrints: Boolean = false) = {

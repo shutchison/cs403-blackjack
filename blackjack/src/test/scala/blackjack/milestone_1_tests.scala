@@ -11,15 +11,15 @@ import scala.collection.mutable.ArrayBuffer
 class milestone_1_tests extends FunSpec with Matchers {
    describe("Milestone 1 tests") {
     describe("Displays the initial player order") {
-      it("Checks that the intial player order is 'Alice, Bob, Carl, Doug'") {
+      it("Checks that the intial player order is 'DealNewHands, Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner'") {
 
         val expectedPlayerOrder = "DealNewHands, Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner"
 
         ActionQueue.showPlayerOrder should equal(expectedPlayerOrder)
       }
     }
-    describe("Advances the turn and checks the player order") {
-      it("Checks that the new player order is 'Bob, Carl, Doug, Alice'"){
+    describe("Advances the turn and checks the ActionQueue") {
+      it("Checks that the ActionQueue is advaced and wraps around correctly"){
         val expectedOrderTurn1 = "DealNewHands, Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner"
         val expectedOrderTurn2 = "Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner, DealNewHands"
         val expectedOrderTurn3 = "Bob, Carl, Doug, Dealer, Payout, CheckForWinner, DealNewHands, Alice"
@@ -54,31 +54,33 @@ class milestone_1_tests extends FunSpec with Matchers {
     
     describe("Checks that the board is diplayed correctly."){
       it("Loads the default deck of cards and checks that it is properly displayed."){
-        var expectedResult = new ArrayBuffer[String]()
-        expectedResult += "================================================================================"
-        expectedResult += "                                   BLACKJACK!"
-        expectedResult += "================================================================================"
-        expectedResult += "                                                                                "
-        expectedResult += "                                   6C JC               "
-        expectedResult += "                                   Hand total: 16      "
-        expectedResult += "                                                       "
-        expectedResult += "                                   Dealer              "              
-        expectedResult += "                                                                                "
-        expectedResult += "--------------------------------------------------------------------------------"
-        expectedResult += "Bet: $5             Bet: $5             Bet: $5             Bet: $5             "
-        expectedResult += "                                                                                "
-        expectedResult += "5C 10C              4C 9C               3C 8C               2C 7C               "
-        expectedResult += "Hand total: 15      Hand total: 13      Hand total: 11      Hand total: 9       "
-        expectedResult += "                                                                                "
-        expectedResult += "Doug                Carl                Bob                 Alice               "
-        expectedResult += "Money: $95          Money: $95          Money: $95          Money: $95          "
-        expectedResult += "Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    "
-        expectedResult += "Next Action: Alice"
+        var expectedResult = ArrayBuffer(
+            "================================================================================",
+            "                                   BLACKJACK!",
+            "================================================================================",
+            "                                                                                ",
+            "                                   6C JC               ",
+            "                                   Hand total: 16      ",
+            "                                                       ",
+            "                                   Dealer              ",
+            "                                                                                ",
+            "--------------------------------------------------------------------------------",
+            "Bet: $5             Bet: $5             Bet: $5             Bet: $5             ",
+            "                                                                                ",
+            "5C 10C              4C 9C               3C 8C               2C 7C               ",
+            "Hand total: 15      Hand total: 13      Hand total: 11      Hand total: 9       ",
+            "                                                                                ",
+            "Doug                Carl                Bob                 Alice               ",
+            "Money: $95          Money: $95          Money: $95          Money: $95          ",
+            "Strategy: Dealer    Strategy: Dealer    Strategy: Dealer    Strategy: Dealer    ",
+            "Next Action: Alice")
         
-        Dealer2.initializeGame(true)
+        Dealer.initializeGame(true)
         
         val t = new textView()
-        
+        println("Printing game area here:")
+
+        println(t.showGameArea)
         assert(t.showGameArea.equals(expectedResult) == true, "\n" +t.showGameArea.toString + "\n" + expectedResult)
         
       }
