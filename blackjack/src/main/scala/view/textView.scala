@@ -13,7 +13,7 @@ class textView {
     gameArea += " "*35 + "BLACKJACK!"
     gameArea += "="*80
     gameArea += " "*80
-    var dealerLines = Dealer.printDealer()
+    var dealerLines = Dealer2.printDealer()
     for (i <- 0 until dealerLines.length) {
       dealerLines(i) = " "*35 + dealerLines(i)
     }
@@ -22,7 +22,7 @@ class textView {
     gameArea += "-"*80
     var playerStrings = new ArrayBuffer[ArrayBuffer[String]]()
     
-    for (player <- Dealer.playerQueue.players) {
+    for (player <- ActionQueue.getPlayersInAlphabeticalOrder) {
       playerStrings += player.printPlayer()
     }
     
@@ -33,12 +33,7 @@ class textView {
       }
       gameArea += line
     }
-    if (Dealer.dealerNeedsToTakeTurnNext) {
-      gameArea += "Current Player: Dealer"
-    }
-    else {
-      gameArea += "Current Player: " + Dealer.playerQueue.getCurrentPlayer().name    
-    }
+    gameArea += "Next Action: " + ActionQueue.front
     
 
     return gameArea

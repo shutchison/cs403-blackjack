@@ -7,6 +7,8 @@ class Player(val name : String, val startingMoney : Int) {
   var hands : ArrayBuffer[Hand] = new ArrayBuffer[Hand]()
   var bet = decideBet()
   
+  var currentStrategy = "Dealer"
+  
   var activeHandIndex = 0
   
   def printPlayer() : ArrayBuffer[String] = {    
@@ -20,7 +22,10 @@ class Player(val name : String, val startingMoney : Int) {
         playerArray ++= hand.printHand()
       }
       playerArray += name + " "*(20-name.length())
-      playerArray += "Money: $" + money.toString() + " "*(12-money.toString().length())         
+      playerArray += "Money: $" + money.toString() + " "*(12-money.toString().length()) 
+
+      playerArray += "Strategy: " + currentStrategy + " "*(10-currentStrategy.length())      
+      
     }
     else if (hands.length > 1) {
       var betString = ""
@@ -57,6 +62,13 @@ class Player(val name : String, val startingMoney : Int) {
         moneyString += "Money: $" + money.toString() + " "*(12-money.toString().length())      
       }
       playerArray += moneyString
+      
+      var strategyString = ""
+
+      for (i <- 1 until hands.length+1) {
+        strategyString += "Strategy: " + currentStrategy + " "*(10-currentStrategy.length())      
+      }
+      playerArray += strategyString
     }
     
     

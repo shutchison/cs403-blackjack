@@ -10,21 +10,13 @@ import scala.util.control.Breaks._
 object Blackjack {
   
   def main (args: Array[String]):Unit= {
-    Dealer.initializeGame(true)
+    val t = new textView()
     
-    val textView = new textView()
-    
-    var gameLines = textView.showGameArea()
-    for (line <- gameLines) {
-      println(line)    
-    }
-    
-    val g = new GUI_view()
-    
+    Dealer2.initializeGame(true)
+    Dealer2.doTurn(true, true)
+    for (line <- t.showGameArea()) println(line)
+    //val g = new GUI_view()
+
+    println("done!")
   }
-  
-
-
-
-
 }

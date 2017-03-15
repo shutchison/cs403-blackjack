@@ -8,43 +8,31 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.control.Breaks._
 
 
-object Dealer{
+object Dealer2{
   val playerStartingMoney = 100
-  
-  var deck = new Deck()
-  var playerQueue = new PlayerQueue()
-  
-  var numActivePlayers = playerQueue.players.length
-  
-  var lastPlayer = playerQueue.getLastPlayer()
-  
-  var dealerHand = new Hand()
   
   var dealerNeedsToTakeTurnNext = false
   
+  var deck = new Deck()
+  //var playerQueue = new PlayerQueue()
+  
+  //var numActivePlayers = playerQueue.players.length
+  
+  //var lastPlayer = playerQueue.getLastPlayer()
+  
+  var dealerHand = new Hand()
+
   def initializeGame(loadFromFile: Boolean = false) = {
-    Dealer.playerQueue = new PlayerQueue()
-    Dealer.dealNewHands(loadFromFile)
+    ActionQueue.reset
+    Dealer2.dealNewHands(loadFromFile)
   }  
   
   def dealNewHands(loadFromFile: Boolean = false) = {
     // Remove all players who can't afford the minimum bet of $5
-    var brokePlayers = new ArrayBuffer[Player]()  
-    for (player <- playerQueue.players) {
-      if (player.money < 5) {
-        brokePlayers += player      
-      }
-    }
-    
-    for (brokePlayer <- brokePlayers){
-      playerQueue.removePlayer(brokePlayer)
-    }
-
-    numActivePlayers = playerQueue.players.length
-    lastPlayer = playerQueue.getLastPlayer()
+    ActionQueue.removeBrokePlayers
 
     // bets are placed and all hands are emptied
-    for (player <- playerQueue.players) {
+    for (player <- ActionQueue.getPlayers) {
       player.money -= player.decideBet()
       while (player.hands.length > 0){
         player.hands.remove(0)
@@ -55,7 +43,7 @@ object Dealer{
     dealerHand = new Hand()
     var newHands : ArrayBuffer[Hand] = new ArrayBuffer[Hand]()
     
-    for (player <- playerQueue.players) {
+    for (player <- ActionQueue.getPlayersInAlphabeticalOrder) {
       newHands += new Hand()
     } 
 
@@ -66,9 +54,10 @@ object Dealer{
       }
       dealerHand.cards += deck.deal()
     }
-    for (player <- playerQueue.players) {
+    for (player <- ActionQueue.getPlayersInAlphabeticalOrder) {
       player.hands += newHands.remove(0)
     }
+    ActionQueue.advanceActionOrder
   }    
 
   def shuffle(loadFromFile : Boolean = false) = {
@@ -82,14 +71,46 @@ object Dealer{
     
     return dealerArray
   }
-
-  def hit() = {
-    val currentPlayer = playerQueue.getCurrentPlayer()
-    currentPlayer.getActiveHand().cards += deck.deal
+  
+  def doMove(loadFromFile: Boolean = false, doPrints : Boolean = false) = {
+    var currentAction = ActionQueue.peekCurrentAction
+    if (currentAction.isLeft) {
+      var currentPlayer = currentAction.left.get
+      var playerDecision = currentPlayer.solicitDecision(doPrints)
+      playerDecision match {
+        case "hit" => hit(currentPlayer)
+        case "stand" => stand()
+        case "bust" => ActionQueue.advanceActionOrder
+        //TODO: double and split
+      }
+    
+    }
+    else {
+      var thingToDo = currentAction.right.get
+      thingToDo match {
+        case "Dealer" => takeDealerTurn(doPrints)
+        case "Payout" => payWinners(doPrints)
+        case "DealNewHands" => dealNewHands(loadFromFile)
+        case "CheckForWinner" => {
+          var winnerString = checkForWinner()
+          if (winnerString != "None") {
+           println(winnerString) 
+          }
+          else {
+            println("No winner detected")
+          }
+        }
+      }
+    }
+  }
+  
+  
+  def hit(player: Player) = {
+    player.getActiveHand().cards += deck.deal
   }
   
   def stand() = {
-    playerQueue.advanceOrder()
+    ActionQueue.advanceActionOrder
   }
   
   def checkForWinner() : String = {
@@ -99,11 +120,11 @@ object Dealer{
       //Also, need to have a winner if there is only one player remaining...
       
       
-      if (playerQueue.players.length == 1) {
-        return playerQueue.players(0).name + " is the winner!"
+      if (ActionQueue.getPlayers.toList.length == 1) {
+        return ActionQueue.getPlayers.toList(0).name + " is the winner!"
       }
       
-      for (player <- playerQueue.players) {
+      for (player <- ActionQueue.getPlayersInAlphabeticalOrder) {
         if (player.money >= playerStartingMoney*2) {
           if (winner == "None"){
             winner = player.name           
@@ -115,6 +136,7 @@ object Dealer{
       }
       
       if (winner == "None") {
+        ActionQueue.advanceActionOrder
         return winner
       }
       else {
@@ -125,7 +147,7 @@ object Dealer{
           winner += " is the winner!"
         }
       }
-
+      ActionQueue.advanceActionOrder
       return winner
   }
   
@@ -147,68 +169,47 @@ object Dealer{
         println("Dealer Stands with " + dealerHand.getHandValue().toString())
       }
     }
-    payWinners()
-    dealerNeedsToTakeTurnNext = false
-    playerQueue.restartQueue()
+    ActionQueue.advanceActionOrder
   }
 
-  def doMove() : String = {
-    // doMove will solicit one move from the active player, or cause the dealer to take his whole turn and pay the winners.
-    val currentPlayer = playerQueue.getCurrentPlayer()
-
-    if (dealerNeedsToTakeTurnNext) {
-      playerQueue.advanceOrder()
-      takeDealerTurn()
-      return "Dealer turn"
-    }
-    else {      
-      val playerMove = currentPlayer.solicitDecision()
-      
-      //TODO: This is going to not work if the last player has multiple hands probably...  It may work now... need to test this.
-      if (currentPlayer.equals(lastPlayer) == true && (playerMove == "stand" || playerMove == "bust")) {
-        if (currentPlayer.isLastHandToPlay()) {
-          dealerNeedsToTakeTurnNext = true
-        }
-      }
-      //TODO: Need to get this to take the whole player turn until they stand or bust instead of just one move.
-      playerMove match {
-        case "hit" => hit()
-        case "stand" => playerQueue.advanceOrder()
-        case "bust" => playerQueue.advanceOrder()
-        //TODO: split and double cases
-        
-        case unexpectedCase => println("Unexpected case: " + unexpectedCase.toString)  
-      }
-      
-      return playerMove      
-    }
-  }
-  
-  def doTurn(doPrints : Boolean = false) = {
+  def doTurn(loadFromFile : Boolean = false, doPrints : Boolean = false) = {
     // doTurn will finish the round until the dealers hand is resolved and pay the winners.
-    while (!dealerNeedsToTakeTurnNext) {
-      doMove()
+    doMove(loadFromFile, doPrints)
+    var currentAction = ActionQueue.peekCurrentAction
+    
+    
+    while(currentAction.isLeft) {
+      doMove(loadFromFile, doPrints)
+      
+      currentAction = ActionQueue.peekCurrentAction
     }
-    // next doMove will trigger dealer's turn
-    doMove()
-    if (doPrints) {
-      val textView = new textView()
-      var gameLines = textView.showGameArea()
-      for (line <- gameLines) {
-        println(line)
-      }    
+
+    while(currentAction.isRight) {
+      if (doPrints) {
+        if(currentAction.right.get == "DealNewHands"){
+          val textView = new textView()
+          var gameLines = textView.showGameArea()
+          for (line <- gameLines) {
+          println(line)
+          }
+        }
+      doMove(loadFromFile, doPrints)
+ 
+      currentAction = ActionQueue.peekCurrentAction
+
+      } 
     }
+    println(ActionQueue.showPlayerOrder)
   }
   
   def doGame(loadFromFile: Boolean = false, doPrints: Boolean = false) = {
     var winnerString = "None"
     while (winnerString == "None"){
-      doTurn(doPrints)
+      doTurn(loadFromFile, doPrints)
       winnerString = checkForWinner()
       if (doPrints) {
         println("Winner string is: " + winnerString)       
       }
-      dealNewHands(loadFromFile)
     }
   }
   
@@ -220,7 +221,7 @@ object Dealer{
     var handResultString = ""
     var result = ""
     
-    for (player <- playerQueue.players) {
+    for (player <- ActionQueue.getPlayersInAlphabeticalOrder) {
       // Dealer busted, so pay players who haven't busted.
       if (dealerHand.getHandValue() > 21) {
         for (hand <- player.hands) {
@@ -262,5 +263,6 @@ object Dealer{
       println("Hand results are as follows:")
       println(handResultString)
     }
+    ActionQueue.advanceActionOrder
   }
 }

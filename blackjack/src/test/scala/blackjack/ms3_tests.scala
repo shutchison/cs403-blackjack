@@ -7,10 +7,6 @@ import controller._
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import scala.collection.mutable.ArrayBuffer
-import model.Card
-import model.Player
-import model.Hand
-import controller.Dealer
 
 class ms3_tests extends FunSpec with Matchers{
   describe("Milestone 3 tests") {
@@ -34,9 +30,10 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                                                                                "
         expectedResult += "Doug                Carl                Bob                 Alice               "
         expectedResult += "Money: $95          Money: $95          Money: $95          Money: $95          "
-        expectedResult += "Current Player: Alice"
+        expectedResult += "Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    "
+        expectedResult += "Next Action: Alice"
         
-        Dealer.initializeGame(true)
+        Dealer2.initializeGame(true)
         
         val t = new textView()
         
@@ -47,33 +44,33 @@ class ms3_tests extends FunSpec with Matchers{
     }
     describe("Checks that winners are detected") {
       it("Confirms that winners are detected") {
-        Dealer.initializeGame(true)
+        Dealer2.initializeGame(true)
         
         
-        var winnerString = Dealer.checkForWinner()
+        var winnerString = Dealer2.checkForWinner()
         winnerString shouldBe("None")
         
-        Dealer.playerQueue.players(0).money = 199
-        winnerString = Dealer.checkForWinner()
+        ActionQueue.playerMap("Alice").money = 199
+        winnerString = Dealer2.checkForWinner()
         winnerString shouldBe("None")
         
-        Dealer.playerQueue.players(0).money = 200
-        winnerString = Dealer.checkForWinner()
+        ActionQueue.playerMap("Alice").money = 200
+        winnerString = Dealer2.checkForWinner()
         winnerString shouldBe("Alice is the winner!")
         
-        Dealer.playerQueue.players(1).money = 200
-        winnerString = Dealer.checkForWinner()
+        ActionQueue.playerMap("Bob").money = 200
+        winnerString = Dealer2.checkForWinner()
         winnerString shouldBe("Alice, Bob TIED!")
         
-        Dealer.playerQueue.players(2).money = 200
-        winnerString = Dealer.checkForWinner()
+        ActionQueue.playerMap("Carl").money = 200
+        winnerString = Dealer2.checkForWinner()
         winnerString shouldBe("Alice, Bob, Carl TIED!")
         
-        Dealer.playerQueue.players(3).money = 200
-        winnerString = Dealer.checkForWinner()
+        ActionQueue.playerMap("Doug").money = 200
+        winnerString = Dealer2.checkForWinner()
         winnerString shouldBe("Alice, Bob, Carl, Doug TIED!")
         
-        Dealer.initializeGame(true)
+        Dealer2.initializeGame(true)
       }
     }
     describe("Allows players to move, a whole turn can be completed, and a whole game can be completed.") {
@@ -97,13 +94,14 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                                                                                "
         expectedResult += "Doug                Carl                Bob                 Alice               "
         expectedResult += "Money: $95          Money: $95          Money: $95          Money: $95          "
-        expectedResult += "Current Player: Bob"
+        expectedResult += "Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    "
+        expectedResult += "Next Action: Bob"
 
                 
-        Dealer.initializeGame(true)
+        Dealer2.initializeGame(true)
 
-        Dealer.doMove() //Alice hits
-        Dealer.doMove() //Alice stands
+        Dealer2.doMove() //Alice hits
+        Dealer2.doMove() //Alice stands
         
         val t = new textView()
         var actualResult = t.showGameArea()
@@ -129,11 +127,12 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                                                                                "
         expectedResult += "Doug                Carl                Bob                 Alice               "
         expectedResult += "Money: $95          Money: $95          Money: $100         Money: $95          "
-        expectedResult += "Current Player: Alice"
+        expectedResult += "Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    "
+        expectedResult += "Next Action: Alice"
         
-        Dealer.initializeGame(true)
+        Dealer2.initializeGame(true)
 
-        Dealer.doTurn()
+        Dealer2.doTurn()
 
         val t = new textView()
         var actualResult = t.showGameArea()
@@ -159,11 +158,12 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                    "
         expectedResult += "Bob                 "
         expectedResult += "Money: $100         "
-        expectedResult += "Current Player: Bob"
+        expectedResult += "Stragegy: Dealer    "
+        expectedResult += "Next Action: Bob"
         
-        Dealer.initializeGame(true)
+        Dealer2.initializeGame(true)
 
-        Dealer.doGame(true, false)
+        Dealer2.doGame(true, false)
 
         val t = new textView()
         var actualResult = t.showGameArea()
@@ -185,6 +185,7 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                    "
         expectedResult += "tester              "
         expectedResult += "Money: $100         "
+        expectedResult += "Stragegy: Dealer    "
         expectedResult += "===================="
         expectedResult += "Bet: $5             "
         expectedResult += "                    "
@@ -193,6 +194,7 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                    "
         expectedResult += "tester              "
         expectedResult += "Money: $100         "
+        expectedResult += "Stragegy: Dealer    "
         expectedResult += "===================="
         expectedResult += "Bet: $5             "
         expectedResult += "                    "
@@ -201,6 +203,7 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                    "
         expectedResult += "tester              "
         expectedResult += "Money: $100         "
+        expectedResult += "Stragegy: Dealer    "
         expectedResult += "===================="
         expectedResult += "Bet: $5             "
         expectedResult += "                    "
@@ -209,6 +212,7 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "*** BUSTED ***      "
         expectedResult += "tester              "
         expectedResult += "Money: $100         "
+        expectedResult += "Stragegy: Dealer    "
         expectedResult += "===================="
         expectedResult += "Bet: $5             "
         expectedResult += "                    "
@@ -217,6 +221,7 @@ class ms3_tests extends FunSpec with Matchers{
         expectedResult += "                    "
         expectedResult += "tester              "
         expectedResult += "Money: $100         "
+        expectedResult += "Stragegy: Dealer    "
         expectedResult += "===================="
     
         var actualResult = new ArrayBuffer[String]()

@@ -1,6 +1,6 @@
 lazy val root = (project in file("."))
   .settings(
-    name := "Card Game GUI",
+    name := "Blackjack!",
     scalaVersion := "2.11.8",
     version := "0.0.1",
     libraryDependencies ++= Seq (

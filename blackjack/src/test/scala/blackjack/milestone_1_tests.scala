@@ -7,42 +7,47 @@ import controller._
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import scala.collection.mutable.ArrayBuffer
-import model.PlayerQueue
-import model.Player
-import model.Hand
-import model.Deck
 
 class milestone_1_tests extends FunSpec with Matchers {
    describe("Milestone 1 tests") {
     describe("Displays the initial player order") {
       it("Checks that the intial player order is 'Alice, Bob, Carl, Doug'") {
 
-        val expectedPlayerOrder = "Alice, Bob, Carl, Doug"
-        
-        val q = new PlayerQueue()
-        q.showPlayerOrder() should equal(expectedPlayerOrder)
+        val expectedPlayerOrder = "DealNewHands, Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner"
+
+        ActionQueue.showPlayerOrder should equal(expectedPlayerOrder)
       }
     }
     describe("Advances the turn and checks the player order") {
       it("Checks that the new player order is 'Bob, Carl, Doug, Alice'"){
-        val expectedPlayerOrderTurnTwo = "Bob, Carl, Doug, Alice"
-        val expectedPlayerOrderTurnThree = "Carl, Doug, Alice, Bob"       
-        val expectedPlayerOrderTurnFour = "Doug, Alice, Bob, Carl"
-        val expectedPlayerOrderTurnFive = "Alice, Bob, Carl, Doug"
+        val expectedOrderTurn1 = "DealNewHands, Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner"
+        val expectedOrderTurn2 = "Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner, DealNewHands"
+        val expectedOrderTurn3 = "Bob, Carl, Doug, Dealer, Payout, CheckForWinner, DealNewHands, Alice"
+        val expectedOrderTurn4 = "Carl, Doug, Dealer, Payout, CheckForWinner, DealNewHands, Alice, Bob"
+        val expectedOrderTurn5 = "Doug, Dealer, Payout, CheckForWinner, DealNewHands, Alice, Bob, Carl"
+        val expectedOrderTurn6 = "Dealer, Payout, CheckForWinner, DealNewHands, Alice, Bob, Carl, Doug"
+        val expectedOrderTurn7 = "Payout, CheckForWinner, DealNewHands, Alice, Bob, Carl, Doug, Dealer"
+        val expectedOrderTurn8 = "CheckForWinner, DealNewHands, Alice, Bob, Carl, Doug, Dealer, Payout"
+        val expectedOrderTurn9 = "DealNewHands, Alice, Bob, Carl, Doug, Dealer, Payout, CheckForWinner"
         
-        val q = new PlayerQueue()
-        
-        q.advanceOrder()
-        q.showPlayerOrder() should equal(expectedPlayerOrderTurnTwo)
-        
-        q.advanceOrder()
-        q.showPlayerOrder() should equal(expectedPlayerOrderTurnThree)
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn1)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn2)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn3)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn4)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn5)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn6)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn7)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn8)
+        ActionQueue.advanceActionOrder
+        ActionQueue.showPlayerOrder shouldBe(expectedOrderTurn9)
 
-        q.advanceOrder()
-        q.showPlayerOrder() should equal(expectedPlayerOrderTurnFour)
-
-        q.advanceOrder()
-        q.showPlayerOrder() should equal(expectedPlayerOrderTurnFive)
         
       }
     }
@@ -67,13 +72,14 @@ class milestone_1_tests extends FunSpec with Matchers {
         expectedResult += "                                                                                "
         expectedResult += "Doug                Carl                Bob                 Alice               "
         expectedResult += "Money: $95          Money: $95          Money: $95          Money: $95          "
-        expectedResult += "Current Player: Alice"
+        expectedResult += "Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    "
+        expectedResult += "Next Action: Alice"
         
-        Dealer.initializeGame(true)
+        Dealer2.initializeGame(true)
         
         val t = new textView()
         
-        t.showGameArea() shouldBe expectedResult
+        assert(t.showGameArea.equals(expectedResult) == true, "\n" +t.showGameArea.toString + "\n" + expectedResult)
         
       }
     }
@@ -110,7 +116,9 @@ class milestone_1_tests extends FunSpec with Matchers {
           expectedValue += "Hand total: 14      "
           expectedValue += "                    "
           expectedValue += "test player         "
-          expectedValue += "Money: $100         "    
+          expectedValue += "Money: $100         "
+          expectedValue += "Strategy: Dealer    "
+          
      
           var h = new Hand()
           var deck = new Deck()
@@ -170,12 +178,9 @@ class milestone_1_tests extends FunSpec with Matchers {
           expectedResult += "                                                                                "
           expectedResult += "Doug                Carl                Bob                 Alice               "
           expectedResult += "Money: $100         Money: $100         Money: $100         Money: $100         "
-          expectedResult += "Current Player: Bob"
-//          
-//          Dealer.dealNewHands(true)
-//      
-//          Dealer.playerQueue.advanceOrder()
-//          Blackjack.showGameArea() shouldBe(expectedResult)
+          expectedResult += "Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    Stragegy: Dealer    "
+          expectedResult += "Next Action: Bob"
+
       }
     }
   }
